@@ -1,0 +1,42 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Emlak Fiyat Tahmini</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Emlak Fiyat Tahmini</h1>
+    <div class="welcome">Hoş Geldiniz! Aşağıdaki formu doldurarak evinizin tahmini fiyatını öğrenebilirsiniz.</div>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+                {% if field.name == "Isıtma_Tipi" %}
+                    (Doğalgaz:1 Diğerleri:0)
+                {% elif field.name == "Site_İçerisinde" %}
+                    (Evet:1 Hayır:0)
+                {% elif field.name == "yaka" %}
+                    (Avrupa:1 Anadolu:0)
+                {% elif field.name == "Eşya_Durumu" %}
+                    (Evet:1 Hayır:0)
+                {% endif %}
+            </label>
+            {{ field }}
+        {% endfor %}
+        <button type="submit">Fiyatı Tahmin Et</button>
+    </form>
+
+    {% if tahmini_fiyat %}
+    <div class="result">
+        <h2>Tahmini Fiyat</h2>
+        <strong>{{ tahmini_fiyat|floatformat:0|intcomma }} TL</strong>
+    </div>
+    {% endif %}
+</body>
+</html>
